@@ -64,4 +64,30 @@ describe('The UsersContract' , async() =>{
         }
 
     });
+
+    it('shuld not allow retrive a non user registered', async() =>{
+        try{
+            await usersContract.methods.getUser(accounts[0]).call();
+            assert.fail('retrive an unsuscribe address');
+        }
+        catch(e){
+            if(e instanceof AssertionErro){
+                assert.fail(e.message);
+            }
+        }
+
+    });
+
+    it('should retrive total users', async() =>{
+        await usersContract.methods.join('Pedro', 'Lopez')
+        .send({from: accounts[0], gas: '500000'});
+
+        await usersContract.methods.join('juan', 'Valdez')
+        .send({from: accounts[1], gas: '500000'});
+
+        let cant = await usersContract.methods.totalUsers().call();
+
+        assert.equal(cant,2);
+    });
+
 });
